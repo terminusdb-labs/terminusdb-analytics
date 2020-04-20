@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from woqlclient.woqlClient import WOQLClient
 from woqlclient import WOQLQuery as WOQL
 from config import server_url, key, db_id
