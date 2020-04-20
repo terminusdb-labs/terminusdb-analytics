@@ -16,13 +16,14 @@ def fetch_docker_pulls(docker_repo: str):
 
 def insert_docker_pulls(docker_repo: str, pull_amount: int, client: WOQLClient):
     today = f"{datetime.datetime.now():%Y-%m-%dT%H:%M:%S}"
-    repo_without_slash = docker_repo.replace("/", "_").replace("-", "_")
+    repo_without_slash = docker_repo.replace("/", "_")
+    repo_without_slash_woql = {"@value": repo_without_slash, "@type": "xsd:string"}
     date_woql = {"@value": today, "@type": "xsd:dateTime"}
     repo_woql = {"@value": docker_repo, "@type": "xsd:string"}
     insert_query = WOQL().when(WOQL().woql_and(
-        WOQL().idgen("doc:DockerRepo", [repo_woql], 'v:DockerRepoId'),
+        WOQL().idgen("doc:DockerRepo", [repo_without_slash_woql], 'v:DockerRepoId'),
         WOQL().idgen("doc:DockerPullStat",
-                     [repo_woql, {'@type': 'xsd:string', '@value': today}],
+                     [repo_without_slash_woql, {'@type': 'xsd:string', '@value': today}],
                      "v:PullStatId")
         ),
         WOQL().woql_and(

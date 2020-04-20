@@ -15,12 +15,14 @@ def process_json(json_decoded):
 
 def insert_stars(client, repo, stars):
     repo_woql = {"@value": repo, "@type": "xsd:string"}
+    repo_without_slash = repo.replace("/", "_")
+    repo_without_slash_woql = {"@value": repo_without_slash, "@type": "xsd:string"}
     for star in stars:
         username_woql = {"@value": star['username'], "@type": "xsd:string"}
         insert_query = WOQL().when(WOQL().woql_and(
-            WOQL().idgen("doc:GitHubRepo", [{'@type': 'xsd:string', '@value': repo}], 'v:GitHubRepoId'),
+            WOQL().idgen("doc:GitHubRepo", [repo_without_slash_woql], 'v:GitHubRepoId'),
             WOQL().idgen("doc:GitHubRepoStar",
-                        [repo_woql, username_woql],
+                        [repo_without_slash_woql, username_woql],
                         "v:GitHubStarId")
             ),
             WOQL().woql_and(
